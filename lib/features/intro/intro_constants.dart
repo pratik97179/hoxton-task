@@ -23,22 +23,7 @@ abstract final class IntroConstants {
   static const String onboardingIcon4 =
       'assets/images/svg/onboarding_intro_icon4.svg';
 
-  // Content screen animation
-  static const Duration contentTakeControlFadeIn = Duration(milliseconds: 500);
-  /// Headline AnimatedSize when "of Your..." renders invisible (Take Control slides up).
-  static const Duration contentHeadlineExpandDuration =
-      Duration(milliseconds: 600);
-  static const Duration contentSecondPartFadeIn = Duration(milliseconds: 500);
-  /// After "of Your..." visible, wait before features list appears.
-  static const Duration contentPauseBeforeFeatures = Duration(milliseconds: 200);
-  static const Duration contentFeaturesListExpandDuration =
-      Duration(milliseconds: 600);
-  static const Duration contentFeatureReveal = Duration(milliseconds: 400);
-  static const Duration contentFeatureStagger = Duration(milliseconds: 350);
-  static const Duration contentGetStartedFadeIn = Duration(milliseconds: 400);
-
-  // Feature list: (label, iconPath)
-  static const List<({String label, String iconPath})> features = [
+  static const List<({String label, String iconPath})> servicesList = [
     (label: 'Organize your finances in one place', iconPath: onboardingIcon1),
     (label: 'Track your financial performance', iconPath: onboardingIcon2),
     (label: 'Plan your Financial future', iconPath: onboardingIcon3),

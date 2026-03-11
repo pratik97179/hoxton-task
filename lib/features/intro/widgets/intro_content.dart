@@ -29,7 +29,7 @@ class _IntroContentState extends State<IntroContent> {
   final ValueNotifier<int> _visibleItemCount = ValueNotifier<int>(0);
   final ValueNotifier<bool> _showContinue = ValueNotifier<bool>(false);
 
-  int get _featureCount => IntroConstants.features.length;
+  int get _featureCount => IntroConstants.servicesList.length;
 
   @override
   void initState() {
@@ -177,28 +177,32 @@ class _IntroContentState extends State<IntroContent> {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(IntroConstants.features.length, (
-                        i,
-                      ) {
-                        final showItem = i < visibleItemCount;
-                        return AnimatedOpacity(
-                          duration: const Duration(milliseconds: 200),
-                          opacity: showItem ? 1 : 0,
-                          child: AnimatedSlide(
+                      children: List.generate(
+                        IntroConstants.servicesList.length,
+                        (i) {
+                          final showItem = i < visibleItemCount;
+                          return AnimatedOpacity(
                             duration: const Duration(milliseconds: 200),
-                            offset: showItem
-                                ? Offset.zero
-                                : const Offset(0, 0.3),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 22),
-                              child: _IntroFeatureRow(
-                                label: IntroConstants.features[i].label,
-                                iconPath: IntroConstants.features[i].iconPath,
+                            opacity: showItem ? 1 : 0,
+                            child: AnimatedSlide(
+                              duration: const Duration(milliseconds: 200),
+                              offset: showItem
+                                  ? Offset.zero
+                                  : const Offset(0, 0.3),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 22,
+                                ),
+                                child: _IntroFeatureRow(
+                                  label: IntroConstants.servicesList[i].label,
+                                  iconPath:
+                                      IntroConstants.servicesList[i].iconPath,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
@@ -284,9 +288,7 @@ class _IntroBottomSection extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {
-                context.go(AppRouteNames.email);
-              },
+              onPressed: () => context.go(AppRouteNames.email),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.white,
                 side: const BorderSide(color: AppColors.white, width: 2),
@@ -310,30 +312,7 @@ class _IntroBottomSection extends StatelessWidget {
             ),
           ),
         ),
-        _IntroHomeIndicator(),
       ],
-    );
-  }
-}
-
-class _IntroHomeIndicator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppSpacing.spacing32 + AppSpacing.spacing4,
-        bottom: AppSpacing.spacing8,
-      ),
-      child: Center(
-        child: Container(
-          width: 134,
-          height: 5,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(100),
-          ),
-        ),
-      ),
     );
   }
 }

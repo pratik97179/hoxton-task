@@ -4,8 +4,6 @@ import 'package:hoxton_task/core/design/components/app_image.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 
-/// Reusable scaffold with primary background and stacked background decor.
-/// Use for screens that share the same deep-green background and Hoxton Wealth's logo.
 class AppScaffoldWithBgDecor extends StatelessWidget {
   const AppScaffoldWithBgDecor({
     super.key,
