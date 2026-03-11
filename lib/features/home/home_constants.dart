@@ -1,10 +1,10 @@
 abstract final class HomeConstants {
   HomeConstants._();
 
-  static const String netWorthTitle = 'Net worth';
-  static const String netWorthValue = '£0';
-  static const String netWorthChange = '+0%';
-  static const String lastUpdated = 'Last updated: --';
+  static const String netWorthTitle = 'Net Worth';
+  static const String netWorthValue = 'USD 12,000.00';
+  static const String netWorthChange = 'USD 234,567.89 (6.89%)';
+  static const String lastUpdated = 'Last updated 9 hours ago';
 
   static const List<String> timeRangeLabels = [
     '1W',

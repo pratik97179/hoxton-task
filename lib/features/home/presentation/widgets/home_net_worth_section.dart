@@ -118,7 +118,11 @@ class _NetWorthValueBlock extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.trending_up, size: 20, color: AppColors.successDark),
+            Icon(
+              Icons.arrow_upward_outlined,
+              size: 20,
+              color: AppColors.successDark,
+            ),
             const SizedBox(width: 2),
             Text(
               change,
