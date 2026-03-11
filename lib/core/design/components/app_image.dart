@@ -66,7 +66,9 @@ class AppImage extends StatelessWidget {
       height: height,
       fit: fit,
       color: color,
-      colorFilter: colorFilter ?? (color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null),
+      colorFilter:
+          colorFilter ??
+          (color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null),
       semanticsLabel: semanticsLabel,
     );
   }

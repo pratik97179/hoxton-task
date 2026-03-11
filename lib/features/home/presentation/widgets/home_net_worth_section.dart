@@ -215,30 +215,32 @@ class _TimeRangeChips extends StatelessWidget {
     final selectedIndex = HomeConstants.selectedTimeRangeIndex;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        labels.length,
-        (i) {
-          final isSelected = i == selectedIndex;
-          return Padding(
-            padding: EdgeInsets.only(right: i < labels.length - 1 ? AppSpacing.spacing16 : 0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: 2),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primaryBg : AppColors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                labels[i],
-                style: TextStyle(
-                  color: isSelected ? AppColors.white : AppColors.captionGrey,
-                  fontSize: 12,
-                  height: 16 / 12,
-                ),
+      children: List.generate(labels.length, (i) {
+        final isSelected = i == selectedIndex;
+        return Padding(
+          padding: EdgeInsets.only(
+            right: i < labels.length - 1 ? AppSpacing.spacing16 : 0,
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacing8,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.primaryBg : AppColors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              labels[i],
+              style: TextStyle(
+                color: isSelected ? AppColors.white : AppColors.captionGrey,
+                fontSize: 12,
+                height: 16 / 12,
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }

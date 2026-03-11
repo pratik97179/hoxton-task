@@ -32,22 +32,30 @@ class HomeContent extends StatelessWidget {
                 HomeNetWorthSection(home: home),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: HomeAssetsLiabilitiesSummary(home: home),
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: HomeAssetListSection(),
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: HomeLiabilitiesSection(home: home),
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: HomeCtaCard(
                     icon: Icons.insights_outlined,
                     title: HomeConstants.forecastTitle,
@@ -57,7 +65,9 @@ class HomeContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: HomeCtaCard(
                     icon: Icons.visibility_outlined,
                     title: HomeConstants.watchlistTitle,
@@ -67,12 +77,16 @@ class HomeContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: const HomeServicesVaultCards(),
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacing16,
+                  ),
                   child: HomeNewsCard(home: home),
                 ),
               ],

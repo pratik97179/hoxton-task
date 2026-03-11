@@ -10,7 +10,7 @@ import 'package:hoxton_task/features/intro/pages/pre_boarding_page.dart';
 GoRouter createAppRouter({required bool hasAccessToken}) {
   return GoRouter(
     initialLocation:
-        hasAccessToken ? AppRouteNames.email : AppRouteNames.intro,
+        hasAccessToken ? AppRouteNames.home : AppRouteNames.intro,
     routes: [
       GoRoute(
         path: AppRouteNames.intro,

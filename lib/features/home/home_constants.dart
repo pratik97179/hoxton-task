@@ -34,7 +34,8 @@ abstract final class HomeConstants {
   static const String watchlistButtonLabel = 'View watchlist';
 
   static const String newsArticleTitle = 'Market update';
-  static const String newsArticleDescription = 'Latest market news and insights.';
+  static const String newsArticleDescription =
+      'Latest market news and insights.';
   static const int newsCarouselDotCount = 3;
   static const int newsCarouselSelectedIndex = 0;
 

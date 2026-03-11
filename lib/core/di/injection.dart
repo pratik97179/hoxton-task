@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -18,7 +20,7 @@ Future<void> initServiceLocator() async {
   sl.registerLazySingleton<Dio>(() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'http://localhost:3000',
+        baseUrl: Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000',
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: <String, Object>{'Content-Type': 'application/json'},

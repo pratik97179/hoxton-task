@@ -4,14 +4,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
+import 'core/session/session_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initServiceLocator();
 
+  final sessionManager = sl<SessionManager>();
+  await sessionManager.restoreFromStorage();
+
   final prefs = await SharedPreferences.getInstance();
-  final hasAccessToken =
+  var hasAccessToken =
       (prefs.getString('accessToken')?.isNotEmpty ?? false);
+
+  // If token exists but session didn't restore (incomplete/corrupt data), clear and show intro
+  if (hasAccessToken && sessionManager.session == null) {
+    await sessionManager.clear();
+    hasAccessToken = false;
+  }
 
   final appRouter = createAppRouter(hasAccessToken: hasAccessToken);
 
