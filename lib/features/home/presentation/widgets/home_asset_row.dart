@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoxton_task/core/design/components/app_image.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
@@ -6,13 +7,18 @@ import 'package:hoxton_task/features/home/home_constants.dart';
 class HomeAssetRow extends StatelessWidget {
   const HomeAssetRow({
     super.key,
-    required this.icon,
+    this.icon,
+    this.iconSvgPath,
     required this.title,
     required this.value,
     this.showAddButton = false,
-  });
+  }) : assert(
+         icon != null || iconSvgPath != null,
+         'Either icon or iconSvgPath must be provided',
+       );
 
-  final IconData icon;
+  final IconData? icon;
+  final String? iconSvgPath;
   final String title;
   final String value;
   final bool showAddButton;
@@ -23,7 +29,7 @@ class HomeAssetRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing8),
       child: Row(
         children: [
-          _IconCircle(icon: icon),
+          _IconCircle(icon: icon, iconSvgPath: iconSvgPath),
           const SizedBox(width: AppSpacing.spacing12),
           Expanded(
             child: Column(
@@ -61,21 +67,24 @@ class HomeAssetRow extends StatelessWidget {
 }
 
 class _IconCircle extends StatelessWidget {
-  const _IconCircle({required this.icon});
+  const _IconCircle({this.icon, this.iconSvgPath});
 
-  final IconData icon;
+  final IconData? icon;
+  final String? iconSvgPath;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 48,
       height: 48,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.secondaryAccent,
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
-      child: Icon(icon, size: 24, color: AppColors.primaryBg),
+      child: iconSvgPath != null
+          ? AppImage.svg(iconSvgPath!, width: 48, height: 48)
+          : Icon(icon!, size: 24, color: AppColors.primaryBg),
     );
   }
 }

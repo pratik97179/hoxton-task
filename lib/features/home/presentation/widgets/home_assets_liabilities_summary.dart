@@ -10,6 +10,8 @@ class HomeAssetsLiabilitiesSummary extends StatelessWidget {
 
   final HomeModel? home;
 
+  static const double _separatorHeight = 3;
+
   @override
   Widget build(BuildContext context) {
     final assetsValue = home?.assetsTotalDisplay ?? HomeConstants.assetsValue;
@@ -18,13 +20,14 @@ class HomeAssetsLiabilitiesSummary extends StatelessWidget {
     return AppCard(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
               Expanded(
                 child: Text(
                   HomeConstants.assetsLabel,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.coolGrey,
                     fontSize: 18,
@@ -36,7 +39,7 @@ class HomeAssetsLiabilitiesSummary extends StatelessWidget {
               Expanded(
                 child: Text(
                   HomeConstants.liabilitiesLabel,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.coolGrey,
                     fontSize: 18,
@@ -47,41 +50,39 @@ class HomeAssetsLiabilitiesSummary extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              width: 80,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.successDark,
-                borderRadius: BorderRadius.circular(2),
-              ),
+          const SizedBox(height: AppSpacing.spacing12),
+          Container(
+            height: _separatorHeight,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.successDark,
+              borderRadius: BorderRadius.circular(_separatorHeight / 2),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.spacing12),
           Row(
             children: [
               Expanded(
                 child: Text(
                   assetsValue,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.coolGrey,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    height: 26 / 18,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    height: 28 / 22,
                   ),
                 ),
               ),
               Expanded(
                 child: Text(
                   liabilitiesValue,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.coolGrey,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    height: 26 / 18,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    height: 28 / 22,
                   ),
                 ),
               ),

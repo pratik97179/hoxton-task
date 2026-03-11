@@ -52,28 +52,18 @@ class HomeContent extends StatelessWidget {
                   child: HomeLiabilitiesSection(home: home),
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.spacing16,
-                  ),
-                  child: HomeCtaCard(
-                    icon: Icons.insights_outlined,
-                    title: HomeConstants.forecastTitle,
-                    description: HomeConstants.forecastDescription,
-                    buttonLabel: HomeConstants.forecastButtonLabel,
-                  ),
+                HomeCtaCard(
+                  iconSvgPath: HomeConstants.homeForecastSvg,
+                  title: HomeConstants.forecastTitle,
+                  description: HomeConstants.forecastDescription,
+                  buttonLabel: HomeConstants.forecastButtonLabel,
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.spacing16,
-                  ),
-                  child: HomeCtaCard(
-                    icon: Icons.visibility_outlined,
-                    title: HomeConstants.watchlistTitle,
-                    description: HomeConstants.watchlistDescription,
-                    buttonLabel: HomeConstants.watchlistButtonLabel,
-                  ),
+                HomeCtaCard(
+                  iconSvgPath: HomeConstants.homeWatchlistSvg,
+                  title: HomeConstants.watchlistTitle,
+                  description: HomeConstants.watchlistDescription,
+                  buttonLabel: HomeConstants.watchlistButtonLabel,
                 ),
                 const SizedBox(height: AppSpacing.spacing16),
                 Padding(

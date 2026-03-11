@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoxton_task/core/design/components/app_image.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
@@ -18,26 +19,26 @@ class HomeBottomNav extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(
             top: AppSpacing.spacing8,
-            bottom: AppSpacing.spacing4,
+            bottom: AppSpacing.spacing16,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavItem(
-                icon: Icons.dashboard_outlined,
+                iconSvgPath: HomeConstants.navHomeSvg,
                 label: HomeConstants.navHome,
                 isSelected: true,
               ),
               _NavItem(
-                icon: Icons.account_balance_wallet_outlined,
+                iconSvgPath: HomeConstants.navAssetsSvg,
                 label: HomeConstants.navAssetsLiabilities,
               ),
               _NavItem(
-                icon: Icons.show_chart_outlined,
+                iconSvgPath: HomeConstants.navWealthflowSvg,
                 label: HomeConstants.navWealthFlow,
               ),
               _NavItem(
-                icon: Icons.person_outline,
+                iconSvgPath: HomeConstants.navMyhoxtonSvg,
                 label: HomeConstants.navMyHoxton,
               ),
             ],
@@ -50,36 +51,27 @@ class HomeBottomNav extends StatelessWidget {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
-    required this.icon,
+    required this.iconSvgPath,
     required this.label,
     this.isSelected = false,
   });
 
-  final IconData icon;
+  final String iconSvgPath;
   final String label;
   final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? AppColors.primaryBg : AppColors.captionGrey;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.secondaryAccent : Colors.transparent,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: 24, color: color),
-        ),
+        AppImage.svg(iconSvgPath, width: 24, height: 24),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            color: color,
             fontSize: 12,
-            height: 16 / 12,
+            color: isSelected ? AppColors.primaryBg : AppColors.coolGrey,
           ),
         ),
       ],

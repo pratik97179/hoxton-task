@@ -11,57 +11,46 @@ class HomeAssetListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.all(AppSpacing.spacing16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.spacing16,
-              AppSpacing.spacing16,
-              AppSpacing.spacing16,
-              AppSpacing.spacing8,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  HomeConstants.assetsLabel,
-                  style: const TextStyle(
-                    color: AppColors.coolGrey,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    height: 28 / 20,
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                HomeConstants.assetsLabel,
+                style: const TextStyle(
+                  color: AppColors.coolGrey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  height: 28 / 20,
                 ),
-                Icon(Icons.add_circle_outline, size: 24, color: AppColors.primaryBg),
-              ],
-            ),
+              ),
+              Icon(Icons.add_circle_outline, size: 24, color: AppColors.primaryBg),
+            ],
           ),
           HomeAssetRow(
-            icon: Icons.account_balance_outlined,
+            iconSvgPath: HomeConstants.homeCashSvg,
             title: HomeConstants.cashAccountsLabel,
             value: HomeConstants.cashAccountsValue,
             showAddButton: true,
           ),
           HomeAssetRow(
-            icon: Icons.show_chart,
+            iconSvgPath: HomeConstants.homeInvestmentsSvg,
             title: HomeConstants.investmentsLabel,
             value: HomeConstants.investmentsValue,
           ),
           HomeAssetRow(
-            icon: Icons.savings_outlined,
+            iconSvgPath: HomeConstants.homePensionsSvg,
             title: HomeConstants.pensionsLabel,
             value: HomeConstants.pensionsValue,
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.spacing8),
-            child: HomeAssetRow(
-              icon: Icons.home_outlined,
-              title: HomeConstants.propertiesLabel,
-              value: HomeConstants.propertiesValue,
-              showAddButton: true,
-            ),
+          HomeAssetRow(
+            iconSvgPath: HomeConstants.homePropertiesSvg,
+            title: HomeConstants.propertiesLabel,
+            value: HomeConstants.propertiesValue,
+            showAddButton: true,
           ),
         ],
       ),

@@ -6,7 +6,7 @@ abstract final class HomeConstants {
   static const String netWorthChange = '+0%';
   static const String lastUpdated = 'Last updated: --';
 
-  static const List<String> timeRangeLabels = ['1M', '3M', '6M', '1Y', 'All'];
+  static const List<String> timeRangeLabels = ['1W', '1M', '6M', '1Y', 'YTD', 'Max'];
   static const int selectedTimeRangeIndex = 0;
 
   static const String assetsLabel = 'Assets';
@@ -23,6 +23,17 @@ abstract final class HomeConstants {
   static const String propertiesLabel = 'Properties';
   static const String propertiesValue = '£0';
   static const String addAssetButtonLabel = 'Add';
+
+  static const String homeCashSvg = 'assets/images/svg/home_cash.svg';
+  static const String homeInvestmentsSvg =
+      'assets/images/svg/home_investments.svg';
+  static const String homePensionsSvg = 'assets/images/svg/home_pensions.svg';
+  static const String homePropertiesSvg =
+      'assets/images/svg/home_properties.svg';
+  static const String homeForecastSvg = 'assets/images/svg/home_forecast.svg';
+  static const String homeWatchlistSvg =
+      'assets/images/svg/home_watchlist.svg';
+  static const String homeVaultSvg = 'assets/images/svg/home_vault.svg';
 
   static const String liabilitiesEmptyMessage = 'No liabilities yet';
 
@@ -48,4 +59,10 @@ abstract final class HomeConstants {
   static const String navAssetsLiabilities = 'Assets & Liabilities';
   static const String navWealthFlow = 'WealthFlow';
   static const String navMyHoxton = 'My Hoxton';
+
+  static const String navHomeSvg = 'assets/images/svg/nav_home.svg';
+  static const String navAssetsSvg = 'assets/images/svg/nav_assets.svg';
+  static const String navWealthflowSvg =
+      'assets/images/svg/nav_wealthflow.svg';
+  static const String navMyhoxtonSvg = 'assets/images/svg/nav_myhoxton.svg';
 }

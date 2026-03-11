@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoxton_task/core/design/components/app_card.dart';
+import 'package:hoxton_task/core/design/components/app_image.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
@@ -23,7 +24,7 @@ class HomeServicesVaultCards extends StatelessWidget {
           const SizedBox(width: AppSpacing.spacing16),
           Expanded(
             child: _SmallCard(
-              icon: Icons.lock_outline,
+              iconSvgPath: HomeConstants.homeVaultSvg,
               title: HomeConstants.vaultTitle,
               description: HomeConstants.vaultDescription,
             ),
@@ -36,12 +37,15 @@ class HomeServicesVaultCards extends StatelessWidget {
 
 class _SmallCard extends StatelessWidget {
   const _SmallCard({
-    required this.icon,
+    this.icon,
+    this.iconSvgPath,
     required this.title,
     required this.description,
-  });
+  }) : assert(icon != null || iconSvgPath != null,
+            'Either icon or iconSvgPath must be provided');
 
-  final IconData icon;
+  final IconData? icon;
+  final String? iconSvgPath;
   final String title;
   final String description;
 
@@ -59,7 +63,9 @@ class _SmallCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: Icon(icon, size: 24, color: AppColors.primaryBg),
+            child: iconSvgPath != null
+                ? AppImage.svg(iconSvgPath!, width: 48, height: 48)
+                : Icon(icon!, size: 24, color: AppColors.primaryBg),
           ),
           const SizedBox(height: AppSpacing.spacing12),
           Text(

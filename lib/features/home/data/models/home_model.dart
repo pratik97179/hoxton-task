@@ -74,7 +74,7 @@ class HomeModel {
     if (v == null) return null;
     if (v is String) return v;
     if (v is num) return v.toString();
-    return v.toString();
+    return null;
   }
 }
 
@@ -105,7 +105,7 @@ class HomeAssetItem {
     if (v == null) return null;
     if (v is String) return v;
     if (v is num) return v.toString();
-    return v.toString();
+    return null;
   }
 }
 
@@ -126,7 +126,7 @@ class HomeLiabilityItem {
     if (v == null) return null;
     if (v is String) return v;
     if (v is num) return v.toString();
-    return v.toString();
+    return null;
   }
 }
 
@@ -152,6 +152,7 @@ class HomeNewsItem {
   static String? _stringFromAny(dynamic v) {
     if (v == null) return null;
     if (v is String) return v;
-    return v.toString();
+    if (v is num) return v.toString();
+    return null;
   }
 }
