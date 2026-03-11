@@ -34,10 +34,31 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.greyGreenTint2,
-      body: SafeArea(
-        child: _controller.isLoading && _controller.home == null
-            ? const Center(child: CircularProgressIndicator())
-            : HomeContent(home: _controller.home),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.gradientTop,
+                    AppColors.greyGreenTint2,
+                    AppColors.white.withValues(alpha: 0.3),
+                  ],
+                  stops: [0.0, 0.5, 1.0],
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: _controller.isLoading && _controller.home == null
+                ? const Center(child: CircularProgressIndicator())
+                : HomeContent(home: _controller.home),
+          ),
+        ],
       ),
     );
   }

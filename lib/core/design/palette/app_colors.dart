@@ -13,4 +13,6 @@ abstract final class AppColors {
   static const Color greyGreenTint2 = Color(0xFFEBF2F1);
   static const Color captionGrey = Color(0xFF888D95);
   static const Color successDark = Color(0xFF067F42);
+
+  static const Color gradientTop = Color(0xFFD1EFF3);
 }
