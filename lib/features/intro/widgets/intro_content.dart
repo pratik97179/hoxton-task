@@ -3,89 +3,37 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:hoxton_task/core/design/components/app_button.dart';
 import 'package:hoxton_task/core/design/components/app_image.dart';
-import 'package:hoxton_task/core/router/app_route_names.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
+import 'package:hoxton_task/core/router/app_route_names.dart';
+import 'package:hoxton_task/features/intro/controllers/intro_content_controller.dart';
 import 'package:hoxton_task/features/intro/intro_constants.dart';
 
-enum _IntroHeaderStage {
-  initial,
-  takeControlVisible,
-  rightTextVisible,
-  movedToTop,
-}
+/// Presentational intro content. Receives [controller]; animation is started by the page.
+class IntroContent extends StatelessWidget {
+  const IntroContent({super.key, required this.controller});
 
-class IntroContent extends StatefulWidget {
-  const IntroContent({super.key});
+  final IntroContentController controller;
 
-  @override
-  State<IntroContent> createState() => _IntroContentState();
-}
-
-class _IntroContentState extends State<IntroContent> {
-  final ValueNotifier<_IntroHeaderStage> _headerStage =
-      ValueNotifier<_IntroHeaderStage>(_IntroHeaderStage.initial);
-  final ValueNotifier<int> _visibleItemCount = ValueNotifier<int>(0);
-  final ValueNotifier<bool> _showContinue = ValueNotifier<bool>(false);
-
-  int get _featureCount => IntroConstants.servicesList.length;
-
-  @override
-  void initState() {
-    super.initState();
-    _startAnimations();
-  }
-
-  Future<void> _startAnimations() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
-    _headerStage.value = _IntroHeaderStage.takeControlVisible;
-
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
-    _headerStage.value = _IntroHeaderStage.rightTextVisible;
-
-    await Future.delayed(const Duration(milliseconds: 200));
-    if (!mounted) return;
-    _headerStage.value = _IntroHeaderStage.movedToTop;
-
-    for (int i = 0; i < _featureCount; i++) {
-      await Future.delayed(const Duration(milliseconds: 450));
-      if (!mounted) return;
-      _visibleItemCount.value = i + 1;
-    }
-
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (!mounted) return;
-    _showContinue.value = true;
-  }
-
-  double _headlineBlockHeight() {
+  static double _headlineBlockHeight() {
     const fs = 36.0;
     const lineHeight = 1.2;
     return fs * lineHeight * 3 + 24;
   }
 
   @override
-  void dispose() {
-    _headerStage.dispose();
-    _visibleItemCount.dispose();
-    _showContinue.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<_IntroHeaderStage>(
-      valueListenable: _headerStage,
+    return ValueListenableBuilder<IntroHeaderStage>(
+      valueListenable: controller.headerStage,
       builder: (context, headerStage, _) {
         final size = MediaQuery.sizeOf(context);
         final isTakeControlVisible =
-            headerStage.index >= _IntroHeaderStage.takeControlVisible.index;
+            headerStage.index >= IntroHeaderStage.takeControlVisible.index;
         final isRightTextVisible =
-            headerStage.index >= _IntroHeaderStage.rightTextVisible.index;
-        final isMovedToTop = headerStage == _IntroHeaderStage.movedToTop;
+            headerStage.index >= IntroHeaderStage.rightTextVisible.index;
+        final isMovedToTop = headerStage == IntroHeaderStage.movedToTop;
 
         return SizedBox(
           width: size.width,
@@ -93,15 +41,14 @@ class _IntroContentState extends State<IntroContent> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // Headline block
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
                 top: isMovedToTop
                     ? 78
                     : isTakeControlVisible
-                    ? size.height / 2 - 60
-                    : size.height / 2,
+                        ? size.height / 2 - 60
+                        : size.height / 2,
                 left: AppSpacing.spacing16,
                 right: AppSpacing.spacing16,
                 child: Column(
@@ -143,7 +90,7 @@ class _IntroContentState extends State<IntroContent> {
                     AnimatedOpacity(
                       opacity: isRightTextVisible ? 1 : 0,
                       duration: const Duration(milliseconds: 300),
-                      child: Text(
+                      child: const Text(
                         'Wealth with Hoxton Wealth App',
                         style: TextStyle(
                           fontFamily: 'Sentient',
@@ -157,8 +104,6 @@ class _IntroContentState extends State<IntroContent> {
                   ],
                 ),
               ),
-
-              // Feature list
               Positioned(
                 left: AppSpacing.spacing16,
                 right: AppSpacing.spacing16,
@@ -166,13 +111,14 @@ class _IntroContentState extends State<IntroContent> {
                   final headerTop = isMovedToTop
                       ? 78.0
                       : isTakeControlVisible
-                      ? size.height / 2 - 60
-                      : size.height / 2;
-                  final belowHeader = headerTop + _headlineBlockHeight() + 24;
+                          ? size.height / 2 - 60
+                          : size.height / 2;
+                  final belowHeader =
+                      headerTop + _headlineBlockHeight() + 24;
                   return math.max(size.height * 0.30, belowHeader);
                 }(),
                 child: ValueListenableBuilder<int>(
-                  valueListenable: _visibleItemCount,
+                  valueListenable: controller.visibleItemCount,
                   builder: (context, visibleItemCount, _) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
@@ -207,20 +153,19 @@ class _IntroContentState extends State<IntroContent> {
                   },
                 ),
               ),
-
-              // Bottom section: Get started + home indicator
               Positioned(
                 bottom: 0,
                 left: AppSpacing.spacing16,
                 right: AppSpacing.spacing16,
                 child: ValueListenableBuilder<bool>(
-                  valueListenable: _showContinue,
+                  valueListenable: controller.showContinue,
                   builder: (context, showContinue, _) => AnimatedOpacity(
                     opacity: showContinue ? 1 : 0,
                     duration: const Duration(milliseconds: 300),
                     child: AnimatedSlide(
                       duration: const Duration(milliseconds: 300),
-                      offset: showContinue ? Offset.zero : const Offset(0, 0.3),
+                      offset:
+                          showContinue ? Offset.zero : const Offset(0, 0.3),
                       child: _IntroBottomSection(),
                     ),
                   ),
@@ -280,31 +225,9 @@ class _IntroFeatureRow extends StatelessWidget {
 class _IntroBottomSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () => context.go(AppRouteNames.email),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.white,
-          side: const BorderSide(color: AppColors.white, width: 2),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacing16,
-            vertical: AppSpacing.spacing8,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-          ),
-          backgroundColor: AppColors.primaryBg,
-        ),
-        child: const Text(
-          'Get started',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            height: 1.5,
-          ),
-        ),
-      ),
+    return AppButton.bordered(
+      label: 'Get started',
+      onPressed: () => context.go(AppRouteNames.email),
     );
   }
 }

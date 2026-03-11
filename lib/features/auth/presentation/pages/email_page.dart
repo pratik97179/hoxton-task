@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hoxton_task/core/design/components/app_button.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
-import 'package:hoxton_task/core/extensions/string_validation_extension.dart';
 import 'package:hoxton_task/core/router/app_route_names.dart';
+import 'package:hoxton_task/features/auth/presentation/controllers/email_entry_controller.dart';
 
 class EmailPage extends StatefulWidget {
   const EmailPage({super.key});
@@ -18,13 +18,19 @@ class EmailPage extends StatefulWidget {
 class _EmailPageState extends State<EmailPage> {
   final _emailController = TextEditingController();
   final _emailFocusNode = FocusNode();
-  final ValueNotifier<bool> _isEmailValid = ValueNotifier(false);
+  late final EmailEntryController _entryController;
+
+  @override
+  void initState() {
+    super.initState();
+    _entryController = EmailEntryController();
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _emailFocusNode.dispose();
-    _isEmailValid.dispose();
+    _entryController.dispose();
     super.dispose();
   }
 
@@ -111,9 +117,7 @@ class _EmailPageState extends State<EmailPage> {
           focusNode: _emailFocusNode,
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
-          onChanged: (value) {
-            _isEmailValid.value = value.isValidEmail;
-          },
+          onChanged: _entryController.validateEmail,
           decoration: InputDecoration(
             hintText: '',
             filled: true,
@@ -163,7 +167,7 @@ class _EmailPageState extends State<EmailPage> {
               decorationColor: AppColors.tertiary,
             ),
             recognizer: TapGestureRecognizer()
-              ..onTap = () => {},
+              ..onTap = () {},
           ),
           const TextSpan(text: ' and '),
           TextSpan(
@@ -186,17 +190,46 @@ class _EmailPageState extends State<EmailPage> {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
       child: ValueListenableBuilder<bool>(
-        valueListenable: _isEmailValid,
-        builder: (context, isValid, _) {
-          return AppButton(
-            label: 'Continue',
-            isEnabled: isValid,
-            onPressed: () {
-              context.push('${AppRouteNames.password}?mode=set', extra: () {});
+        valueListenable: _entryController.isChecking,
+        builder: (context, isChecking, _) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: _entryController.isEmailValid,
+            builder: (context, isValid, __) {
+              final isEnabled = isValid && !isChecking;
+              return AppButton(
+                label: isChecking ? 'Checking...' : 'Continue',
+                isEnabled: isEnabled,
+                onPressed: isEnabled ? _onContinue : null,
+              );
             },
           );
         },
       ),
     );
+  }
+
+  Future<void> _onContinue() async {
+    final email = _emailController.text.trim();
+    final result = await _entryController.checkEmail(email);
+    if (!mounted) return;
+
+    switch (result) {
+      case EmailCheckSuccess(:final userExists):
+        if (userExists) {
+          context.push(
+            '${AppRouteNames.password}?mode=verify',
+            extra: email,
+          );
+        } else {
+          context.push(
+            '${AppRouteNames.password}?mode=set',
+            extra: email,
+          );
+        }
+      case EmailCheckFailure(:final message):
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+    }
   }
 }

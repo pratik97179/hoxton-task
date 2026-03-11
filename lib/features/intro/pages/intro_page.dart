@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:hoxton_task/core/design/components/app_scaffold.dart';
+import 'package:hoxton_task/features/intro/controllers/intro_content_controller.dart';
 import 'package:hoxton_task/features/intro/services/intro_splash_controller.dart';
 import 'package:hoxton_task/features/intro/widgets/intro_content.dart';
 import 'package:hoxton_task/features/intro/widgets/intro_splash_body.dart';
@@ -15,17 +16,20 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage>
     with TickerProviderStateMixin {
   late final IntroSplashController _controller;
+  late final IntroContentController _introContentController;
 
   @override
   void initState() {
     super.initState();
     _controller = IntroSplashController(vsync: this);
     _controller.start();
+    _introContentController = IntroContentController();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _introContentController.dispose();
     super.dispose();
   }
 
@@ -36,7 +40,9 @@ class _IntroPageState extends State<IntroPage>
         valueListenable: _controller.phase,
         builder: (context, phase, _) {
           if (phase == 4) {
-            return IntroContent();
+            return _IntroContentWithAnimation(
+              controller: _introContentController,
+            );
           }
           if (phase == 3) {
             return AnimatedBuilder(
@@ -59,5 +65,29 @@ class _IntroPageState extends State<IntroPage>
         },
       ),
     );
+  }
+}
+
+/// Starts the intro content animation once, then builds [IntroContent].
+class _IntroContentWithAnimation extends StatefulWidget {
+  const _IntroContentWithAnimation({required this.controller});
+
+  final IntroContentController controller;
+
+  @override
+  State<_IntroContentWithAnimation> createState() =>
+      _IntroContentWithAnimationState();
+}
+
+class _IntroContentWithAnimationState extends State<_IntroContentWithAnimation> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.startAnimations();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IntroContent(controller: widget.controller);
   }
 }

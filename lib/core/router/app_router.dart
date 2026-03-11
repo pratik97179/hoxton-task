@@ -1,14 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:hoxton_task/features/intro/pages/email_page.dart';
-import 'package:hoxton_task/features/intro/pages/intro_page.dart';
-import 'package:hoxton_task/features/intro/pages/password_page.dart';
 import 'package:hoxton_task/core/router/app_route_names.dart';
+import 'package:hoxton_task/features/auth/presentation/pages/password_page.dart';
+import 'package:hoxton_task/features/home/presentation/pages/home_page.dart';
+import 'package:hoxton_task/features/auth/presentation/pages/email_page.dart';
+import 'package:hoxton_task/features/intro/pages/intro_page.dart';
+import 'package:hoxton_task/features/intro/pages/pre_boarding_page.dart';
 
 GoRouter createAppRouter() {
   return GoRouter(
-    initialLocation: AppRouteNames.intro,
+    // TODO: revert to intro when done
+    initialLocation: AppRouteNames.preBoarding,
     routes: [
       GoRoute(
         path: AppRouteNames.intro,
@@ -25,16 +27,32 @@ GoRouter createAppRouter() {
         name: AppRouteNames.passwordName,
         builder: (context, state) {
           final mode = state.uri.queryParameters['mode'] ?? 'set';
-          final onSubmit = state.extra as VoidCallback?;
+          final String? email = state.extra is String ? state.extra as String : null;
           switch (mode) {
-            case 'confirm':
-              return PasswordPage.confirm(onSubmit: onSubmit);
             case 'verify':
-              return PasswordPage.verify(onSubmit: onSubmit);
+              return PasswordPage.verify(email: email);
+            case 'set':
             default:
-              return PasswordPage.set(onSubmit: onSubmit);
+              return PasswordPage.set(email: email);
           }
         },
+      ),
+      GoRoute(
+        path: AppRouteNames.preBoarding,
+        name: AppRouteNames.preBoardingName,
+        builder: (context, state) {
+          final String? userName =
+              state.extra is String ? state.extra as String : null;
+          return PreBoardingPage(
+            userName: userName,
+            onComplete: () => context.go(AppRouteNames.home),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRouteNames.home,
+        name: AppRouteNames.homeName,
+        builder: (context, state) => const HomePage(),
       ),
     ],
   );

@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:hoxton_task/core/design/components/app_button.dart';
 import 'package:hoxton_task/core/design/components/app_image.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/core/extensions/string_validation_extension.dart';
+import 'package:hoxton_task/core/router/app_route_names.dart';
 import 'package:hoxton_task/core/utils/password_requirements.dart';
 import 'package:hoxton_task/core/utils/password_validation.dart';
+import 'package:hoxton_task/features/auth/presentation/controllers/auth_flow_controller.dart';
 
-enum PasswordPageMode { set, confirm, verify }
+enum PasswordPageMode { set, verify }
 
 class PasswordPage extends StatefulWidget {
-  const PasswordPage._({required this.mode, this.onSubmit});
+  const PasswordPage._({
+    required this.mode,
+    this.email,
+  });
 
-  factory PasswordPage.set({VoidCallback? onSubmit}) {
-    return PasswordPage._(mode: PasswordPageMode.set, onSubmit: onSubmit);
+  factory PasswordPage.set({String? email}) {
+    return PasswordPage._(mode: PasswordPageMode.set, email: email);
   }
 
-  factory PasswordPage.confirm({VoidCallback? onSubmit}) {
-    return PasswordPage._(mode: PasswordPageMode.confirm, onSubmit: onSubmit);
-  }
-
-  factory PasswordPage.verify({VoidCallback? onSubmit}) {
-    return PasswordPage._(mode: PasswordPageMode.verify, onSubmit: onSubmit);
+  factory PasswordPage.verify({String? email}) {
+    return PasswordPage._(mode: PasswordPageMode.verify, email: email);
   }
 
   final PasswordPageMode mode;
-  final VoidCallback? onSubmit;
+  final String? email;
 
   @override
   State<PasswordPage> createState() => _PasswordPageState();
@@ -35,13 +38,13 @@ class _PasswordPageState extends State<PasswordPage> {
   final _passwordController = TextEditingController();
   final _passwordFocusNode = FocusNode();
   final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
+  late final AuthFlowController _authController;
 
   bool get _isButtonEnabled {
     final value = _passwordController.text;
     switch (widget.mode) {
       case PasswordPageMode.set:
         return value.passwordValidationStatus.isValid;
-      case PasswordPageMode.confirm:
       case PasswordPageMode.verify:
         return value.isNotEmpty;
     }
@@ -51,8 +54,6 @@ class _PasswordPageState extends State<PasswordPage> {
     switch (widget.mode) {
       case PasswordPageMode.set:
         return 'Set Password';
-      case PasswordPageMode.confirm:
-        return 'Confirm Password';
       case PasswordPageMode.verify:
         return 'Enter Password';
     }
@@ -62,8 +63,6 @@ class _PasswordPageState extends State<PasswordPage> {
     switch (widget.mode) {
       case PasswordPageMode.set:
         return 'Create a strong password to secure your account.';
-      case PasswordPageMode.confirm:
-        return 'Re-enter your password to confirm.';
       case PasswordPageMode.verify:
         return 'Enter your password to sign in.';
     }
@@ -73,8 +72,6 @@ class _PasswordPageState extends State<PasswordPage> {
     switch (widget.mode) {
       case PasswordPageMode.set:
         return 'Set Password';
-      case PasswordPageMode.confirm:
-        return 'Confirm';
       case PasswordPageMode.verify:
         return 'Sign In';
     }
@@ -83,10 +80,17 @@ class _PasswordPageState extends State<PasswordPage> {
   bool get _showRequirements => widget.mode == PasswordPageMode.set;
 
   @override
+  void initState() {
+    super.initState();
+    _authController = AuthFlowController();
+  }
+
+  @override
   void dispose() {
     _passwordController.dispose();
     _passwordFocusNode.dispose();
     _obscurePassword.dispose();
+    _authController.dispose();
     super.dispose();
   }
 
@@ -307,16 +311,51 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
+  bool get _canSubmit => widget.email != null;
+
+  Future<void> _onSubmit() async {
+    final email = widget.email;
+    final password = _passwordController.text;
+    if (email == null) return;
+
+    final result = await _authController.submit(
+      email: email,
+      password: password,
+      isSignIn: widget.mode == PasswordPageMode.verify,
+    );
+    if (!mounted) return;
+
+    switch (result) {
+      case AuthFlowSuccess(:final isSignIn, email: final successEmail):
+        if (isSignIn) {
+          context.go(AppRouteNames.home);
+        } else if (successEmail != null) {
+          context.go(AppRouteNames.preBoarding, extra: successEmail);
+        }
+      case AuthFlowFailure(:final message):
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+    }
+  }
+
   Widget _buildButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
-      child: ValueListenableBuilder<TextEditingValue>(
-        valueListenable: _passwordController,
-        builder: (context, value, _) {
-          return AppButton(
-            label: _buttonText,
-            isEnabled: _isButtonEnabled,
-            onPressed: widget.onSubmit,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _authController.isSubmitting,
+        builder: (context, submitting, _) {
+          return ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _passwordController,
+            builder: (context, value, __) {
+              final enabled =
+                  !submitting && _isButtonEnabled && _canSubmit;
+              return AppButton(
+                label: submitting ? 'Please wait...' : _buttonText,
+                isEnabled: enabled,
+                onPressed: enabled ? _onSubmit : null,
+              );
+            },
           );
         },
       ),
