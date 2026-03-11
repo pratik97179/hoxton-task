@@ -13,8 +13,7 @@ class IntroPage extends StatefulWidget {
   State<IntroPage> createState() => _IntroPageState();
 }
 
-class _IntroPageState extends State<IntroPage>
-    with TickerProviderStateMixin {
+class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
   late final IntroSplashController _controller;
   late final IntroContentController _introContentController;
 
@@ -78,7 +77,8 @@ class _IntroContentWithAnimation extends StatefulWidget {
       _IntroContentWithAnimationState();
 }
 
-class _IntroContentWithAnimationState extends State<_IntroContentWithAnimation> {
+class _IntroContentWithAnimationState
+    extends State<_IntroContentWithAnimation> {
   @override
   void initState() {
     super.initState();

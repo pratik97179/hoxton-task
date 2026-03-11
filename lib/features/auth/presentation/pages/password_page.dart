@@ -14,10 +14,7 @@ import 'package:hoxton_task/features/auth/presentation/controllers/auth_flow_con
 enum PasswordPageMode { set, verify }
 
 class PasswordPage extends StatefulWidget {
-  const PasswordPage._({
-    required this.mode,
-    this.email,
-  });
+  const PasswordPage._({required this.mode, this.email});
 
   factory PasswordPage.set({String? email}) {
     return PasswordPage._(mode: PasswordPageMode.set, email: email);
@@ -333,9 +330,9 @@ class _PasswordPageState extends State<PasswordPage> {
           context.go(AppRouteNames.preBoarding, extra: successEmail);
         }
       case AuthFlowFailure(:final message):
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        ScaffoldMessenger.maybeOf(
+          context,
+        )?.showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -348,8 +345,7 @@ class _PasswordPageState extends State<PasswordPage> {
           return ValueListenableBuilder<TextEditingValue>(
             valueListenable: _passwordController,
             builder: (context, value, _) {
-              final enabled =
-                  !submitting && _isButtonEnabled && _canSubmit;
+              final enabled = !submitting && _isButtonEnabled && _canSubmit;
               return AppButton(
                 label: submitting ? 'Please wait...' : _buttonText,
                 isEnabled: enabled,

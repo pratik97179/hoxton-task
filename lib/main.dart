@@ -17,7 +17,6 @@ void main() async {
   var hasAccessToken =
       (prefs.getString('accessToken')?.isNotEmpty ?? false);
 
-  // If token exists but session didn't restore (incomplete/corrupt data), clear and show intro
   if (hasAccessToken && sessionManager.session == null) {
     await sessionManager.clear();
     hasAccessToken = false;

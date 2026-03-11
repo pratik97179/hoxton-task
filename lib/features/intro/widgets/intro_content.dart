@@ -21,7 +21,9 @@ class IntroContent extends StatefulWidget {
 class _IntroContentState extends State<IntroContent>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pinController;
-  final ValueNotifier<double> _unpinnedSpacerHeight = ValueNotifier<double>(200);
+  final ValueNotifier<double> _unpinnedSpacerHeight = ValueNotifier<double>(
+    200,
+  );
 
   @override
   void initState() {
@@ -34,8 +36,7 @@ class _IntroContentState extends State<IntroContent>
   }
 
   void _onHeaderStageChanged() {
-    if (widget.controller.headerStage.value ==
-            IntroHeaderStage.movedToTop &&
+    if (widget.controller.headerStage.value == IntroHeaderStage.movedToTop &&
         !_pinController.isAnimating &&
         _pinController.status != AnimationStatus.completed) {
       _pinController.forward();
@@ -70,10 +71,10 @@ class _IntroContentState extends State<IntroContent>
               });
             }
 
-            final showHeadlineTitle = currentStage.index >=
-                IntroHeaderStage.takeControlVisible.index;
-            final showHeadlineSubtitle = currentStage.index >=
-                IntroHeaderStage.rightTextVisible.index;
+            final showHeadlineTitle =
+                currentStage.index >= IntroHeaderStage.takeControlVisible.index;
+            final showHeadlineSubtitle =
+                currentStage.index >= IntroHeaderStage.rightTextVisible.index;
             final isHeaderPinnedToTop =
                 currentStage == IntroHeaderStage.movedToTop;
 
@@ -85,9 +86,9 @@ class _IntroContentState extends State<IntroContent>
                   builder: (context, _) {
                     final height = isHeaderPinnedToTop
                         ? IntroConstants.headerTopInset +
-                            (unpinnedSpacerHeight -
-                                    IntroConstants.headerTopInset) *
-                                (1.0 - _pinController.value)
+                              (unpinnedSpacerHeight -
+                                      IntroConstants.headerTopInset) *
+                                  (1.0 - _pinController.value)
                         : unpinnedHeight;
                     return Column(
                       children: [
@@ -150,40 +151,48 @@ class _IntroContentState extends State<IntroContent>
                           ),
                         ),
                         const SizedBox(
-                            height: IntroConstants.headerToFeaturesSpacing),
+                          height: IntroConstants.headerToFeaturesSpacing,
+                        ),
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.spacing16,
                             ),
                             child: ValueListenableBuilder<int>(
-                              valueListenable: widget.controller.visibleItemCount,
+                              valueListenable:
+                                  widget.controller.visibleItemCount,
                               builder: (context, revealedFeatureCount, _) {
                                 return SingleChildScrollView(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: List.generate(
                                       IntroConstants.servicesList.length,
                                       (index) {
                                         final isFeatureRevealed =
                                             index < revealedFeatureCount;
                                         return AnimatedOpacity(
-                                          duration: const Duration(milliseconds: 200),
+                                          duration: const Duration(
+                                            milliseconds: 200,
+                                          ),
                                           opacity: isFeatureRevealed ? 1 : 0,
                                           child: AnimatedSlide(
-                                            duration: const Duration(milliseconds: 200),
+                                            duration: const Duration(
+                                              milliseconds: 200,
+                                            ),
                                             offset: isFeatureRevealed
                                                 ? Offset.zero
                                                 : const Offset(0, 0.4),
                                             child: Padding(
                                               padding: const EdgeInsets.symmetric(
-                                                vertical:
-                                                    IntroConstants.featureRowVerticalPadding,
+                                                vertical: IntroConstants
+                                                    .featureRowVerticalPadding,
                                               ),
                                               child: _IntroFeatureRow(
-                                                label:
-                                                    IntroConstants.servicesList[index].label,
+                                                label: IntroConstants
+                                                    .servicesList[index]
+                                                    .label,
                                                 iconPath: IntroConstants
                                                     .servicesList[index]
                                                     .iconPath,
@@ -200,22 +209,21 @@ class _IntroContentState extends State<IntroContent>
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.spacing16,
-                          ),
+                          padding: const EdgeInsets.all(AppSpacing.spacing16),
                           child: ValueListenableBuilder<bool>(
                             valueListenable: widget.controller.showContinue,
-                            builder: (context, isContinueRevealed, _) => AnimatedOpacity(
-                              opacity: isContinueRevealed ? 1 : 0,
-                              duration: const Duration(milliseconds: 300),
-                              child: AnimatedSlide(
-                                duration: const Duration(milliseconds: 300),
-                                offset: isContinueRevealed
-                                    ? Offset.zero
-                                    : const Offset(0, 0.4),
-                                child: _IntroBottomSection(),
-                              ),
-                            ),
+                            builder: (context, isContinueRevealed, _) =>
+                                AnimatedOpacity(
+                                  opacity: isContinueRevealed ? 1 : 0,
+                                  duration: const Duration(milliseconds: 300),
+                                  child: AnimatedSlide(
+                                    duration: const Duration(milliseconds: 300),
+                                    offset: isContinueRevealed
+                                        ? Offset.zero
+                                        : const Offset(0, 0.4),
+                                    child: _IntroBottomSection(),
+                                  ),
+                                ),
                           ),
                         ),
                       ],

@@ -166,8 +166,7 @@ class _EmailPageState extends State<EmailPage> {
               decoration: TextDecoration.underline,
               decorationColor: AppColors.tertiary,
             ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {},
+            recognizer: TapGestureRecognizer()..onTap = () {},
           ),
           const TextSpan(text: ' and '),
           TextSpan(
@@ -177,8 +176,7 @@ class _EmailPageState extends State<EmailPage> {
               decoration: TextDecoration.underline,
               decorationColor: AppColors.tertiary,
             ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {},
+            recognizer: TapGestureRecognizer()..onTap = () {},
           ),
           const TextSpan(text: '.'),
         ],
@@ -216,20 +214,14 @@ class _EmailPageState extends State<EmailPage> {
     switch (result) {
       case EmailCheckSuccess(:final userExists):
         if (userExists) {
-          context.push(
-            '${AppRouteNames.password}?mode=verify',
-            extra: email,
-          );
+          context.push('${AppRouteNames.password}?mode=verify', extra: email);
         } else {
-          context.push(
-            '${AppRouteNames.password}?mode=set',
-            extra: email,
-          );
+          context.push('${AppRouteNames.password}?mode=set', extra: email);
         }
       case EmailCheckFailure(:final message):
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        ScaffoldMessenger.maybeOf(
+          context,
+        )?.showSnackBar(SnackBar(content: Text(message)));
     }
   }
 }
