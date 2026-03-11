@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
@@ -149,16 +150,27 @@ class _GraphCard extends StatelessWidget {
   const _GraphCard();
 
   static const double _chartHeight = 266;
-  static const List<String> _yLabels = ['150K', '125K', '100K', '50K', '25K'];
-  static const List<String> _xLabels = [
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
+
+  static const double _minY = 0;
+  static const double _maxY = 150;
+  static const double _minX = 11;
+  static const double _maxX = 17;
+
+  static final List<FlSpot> _chartSpots = [
+    const FlSpot(11, 25),
+    const FlSpot(12, 98),
+    const FlSpot(13, 72),
+    const FlSpot(14, 88),
+    const FlSpot(15, 118),
+    const FlSpot(16, 102),
+    const FlSpot(17, 152),
   ];
+
+  static const _axisLabelStyle = TextStyle(
+    color: AppColors.coolGrey,
+    fontSize: 14,
+    height: 20 / 14,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -169,147 +181,96 @@ class _GraphCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.only(
         top: AppSpacing.spacing16,
-        left: AppSpacing.spacing16,
-        right: AppSpacing.spacing16,
         bottom: AppSpacing.spacing16,
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          const yLabelWidth = 32.0;
-          const xLabelHeight = 20.0;
-          final chartWidth = constraints.maxWidth - yLabelWidth;
-          final chartHeight = constraints.maxHeight - xLabelHeight;
-          return Stack(
-            children: [
-              Positioned(
-                left: 0,
-                top: 0,
-                bottom: xLabelHeight,
-                width: chartWidth,
-                child: CustomPaint(
-                  painter: _NetWorthGraphPainter(),
-                  size: Size(chartWidth, chartHeight),
+      child: LineChart(
+        LineChartData(
+          minX: _minX,
+          maxX: _maxX,
+          minY: _minY,
+          maxY: _maxY,
+          gridData: FlGridData(
+            show: true,
+            verticalInterval: 25,
+            horizontalInterval: (_maxY - _minY) / 4,
+            getDrawingHorizontalLine: (_) =>
+                FlLine(color: AppColors.captionGrey, strokeWidth: 1),
+          ),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 44,
+                interval: (_maxY - _minY) / 4,
+                getTitlesWidget: (value, meta) {
+                  const labels = ['', '25K', '50K', '100K', '125K', '150K'];
+                  final index = ((value - _minY) / ((_maxY - _minY) / 4))
+                      .round()
+                      .clamp(0, 4);
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      labels[index],
+                      style: _axisLabelStyle,
+                      textAlign: TextAlign.right,
+                    ),
+                  );
+                },
+              ),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 20,
+                interval: 1,
+                getTitlesWidget: (value, meta) {
+                  final label = value.toInt().toString();
+                  return Text(
+                    label,
+                    style: _axisLabelStyle,
+                    textAlign: TextAlign.center,
+                  );
+                },
+              ),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          lineTouchData: const LineTouchData(enabled: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: _chartSpots,
+              isCurved: true,
+              curveSmoothness: 0.35,
+              color: AppColors.primaryBg,
+              barWidth: 2,
+              isStrokeCapRound: true,
+              dotData: const FlDotData(show: false),
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.primaryBg.withValues(alpha: 0.3),
+                    AppColors.primaryBg.withValues(alpha: 0.2),
+                    AppColors.tertiary.withValues(alpha: 0.2),
+                  ],
+                  stops: [0.0, 0.6, 1.0],
                 ),
               ),
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: xLabelHeight,
-                width: yLabelWidth,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: _yLabels
-                      .map(
-                        (label) => Text(
-                          label,
-                          style: const TextStyle(
-                            color: AppColors.coolGrey,
-                            fontSize: 14,
-                            height: 20 / 14,
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                right: yLabelWidth,
-                bottom: 0,
-                height: xLabelHeight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: _xLabels
-                      .map(
-                        (label) => SizedBox(
-                          width: 24,
-                          child: Text(
-                            label,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: AppColors.coolGrey,
-                              fontSize: 14,
-                              height: 20 / 14,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-            ],
-          );
-        },
+            ),
+          ],
+        ),
+        duration: const Duration(milliseconds: 150),
       ),
     );
   }
-}
-
-class _NetWorthGraphPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    const lineColor = AppColors.tertiary;
-    final gridPaint = Paint()
-      ..color = AppColors.greyGreenTint2
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
-
-    final yTicks = 5;
-    final chartTop = 0.0;
-    final chartBottom = size.height;
-    for (var i = 0; i <= yTicks; i++) {
-      final y = chartTop + (chartBottom - chartTop) * i / yTicks;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
-    }
-
-    final pts = _chartPoints(size);
-    final linePaint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-    final fillPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          lineColor.withValues(alpha: 0.25),
-          lineColor.withValues(alpha: 0.0),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
-
-    final fillPath = Path()..moveTo(pts.first.dx, pts.first.dy);
-    for (var i = 1; i < pts.length; i++) {
-      fillPath.lineTo(pts[i].dx, pts[i].dy);
-    }
-    fillPath.lineTo(size.width, size.height);
-    fillPath.lineTo(0, size.height);
-    fillPath.close();
-    canvas.drawPath(fillPath, fillPaint);
-
-    final linePath = Path()..moveTo(pts.first.dx, pts.first.dy);
-    for (var i = 1; i < pts.length; i++) {
-      linePath.lineTo(pts[i].dx, pts[i].dy);
-    }
-    canvas.drawPath(linePath, linePaint);
-  }
-
-  List<Offset> _chartPoints(Size size) {
-    final w = size.width;
-    final h = size.height;
-    final normalizedY = [0.167, 0.67, 0.6, 0.63, 0.8, 0.8, 1.0];
-    return List.generate(7, (i) {
-      final x = w * i / 6;
-      final y = h * (1 - normalizedY[i]);
-      return Offset(x, y);
-    });
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _TimeRangeChips extends StatelessWidget {
