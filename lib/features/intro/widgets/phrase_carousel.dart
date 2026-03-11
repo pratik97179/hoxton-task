@@ -6,7 +6,6 @@ enum PhraseCarouselPhase {
   entering,
 }
 
-/// View state for [PhraseCarousel] so only the Stack rebuilds.
 class PhraseCarouselViewState {
   const PhraseCarouselViewState({
     required this.phase,
@@ -40,7 +39,7 @@ class PhraseCarousel extends StatefulWidget {
     super.key,
     required this.controller,
     this.style,
-    this.transitionDuration = const Duration(milliseconds: 1000),
+    this.transitionDuration = const Duration(milliseconds: 200),
   });
 
   final PhraseCarouselController controller;
@@ -65,7 +64,7 @@ class _PhraseCarouselState extends State<PhraseCarousel>
     exitingIndex: null,
   ));
 
-  static const Duration _gapBetweenExitAndEnter = Duration(milliseconds: 50);
+  static const Duration _gapBetweenExitAndEnter = Duration(milliseconds: 10);
 
   static const double _lineHeight = 22;
 

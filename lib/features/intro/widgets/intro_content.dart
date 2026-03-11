@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,168 +9,222 @@ import 'package:hoxton_task/core/router/app_route_names.dart';
 import 'package:hoxton_task/features/intro/controllers/intro_content_controller.dart';
 import 'package:hoxton_task/features/intro/intro_constants.dart';
 
-/// Presentational intro content. Receives [controller]; animation is started by the page.
-class IntroContent extends StatelessWidget {
+class IntroContent extends StatefulWidget {
   const IntroContent({super.key, required this.controller});
 
   final IntroContentController controller;
 
-  static double _headlineBlockHeight() {
-    const fs = 36.0;
-    const lineHeight = 1.2;
-    return fs * lineHeight * 3 + 24;
+  @override
+  State<IntroContent> createState() => _IntroContentState();
+}
+
+class _IntroContentState extends State<IntroContent>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pinController;
+  final ValueNotifier<double> _unpinnedSpacerHeight = ValueNotifier<double>(200);
+
+  @override
+  void initState() {
+    super.initState();
+    _pinController = AnimationController(
+      vsync: this,
+      duration: IntroConstants.slideDuration,
+    );
+    widget.controller.headerStage.addListener(_onHeaderStageChanged);
+  }
+
+  void _onHeaderStageChanged() {
+    if (widget.controller.headerStage.value ==
+            IntroHeaderStage.movedToTop &&
+        !_pinController.isAnimating &&
+        _pinController.status != AnimationStatus.completed) {
+      _pinController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.headerStage.removeListener(_onHeaderStageChanged);
+    _unpinnedSpacerHeight.dispose();
+    _pinController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<IntroHeaderStage>(
-      valueListenable: controller.headerStage,
-      builder: (context, headerStage, _) {
-        final size = MediaQuery.sizeOf(context);
-        final isTakeControlVisible =
-            headerStage.index >= IntroHeaderStage.takeControlVisible.index;
-        final isRightTextVisible =
-            headerStage.index >= IntroHeaderStage.rightTextVisible.index;
-        final isMovedToTop = headerStage == IntroHeaderStage.movedToTop;
+      valueListenable: widget.controller.headerStage,
+      builder: (context, currentStage, _) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final maxHeight = constraints.maxHeight;
+            final unpinnedHeight = maxHeight * 0.35;
+            if (currentStage == IntroHeaderStage.rightTextVisible &&
+                (_unpinnedSpacerHeight.value - unpinnedHeight).abs() > 1) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted &&
+                    widget.controller.headerStage.value ==
+                        IntroHeaderStage.rightTextVisible) {
+                  _unpinnedSpacerHeight.value = unpinnedHeight;
+                }
+              });
+            }
 
-        return SizedBox(
-          width: size.width,
-          height: size.height,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                top: isMovedToTop
-                    ? 78
-                    : isTakeControlVisible
-                        ? size.height / 2 - 60
-                        : size.height / 2,
-                left: AppSpacing.spacing16,
-                right: AppSpacing.spacing16,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+            final showHeadlineTitle = currentStage.index >=
+                IntroHeaderStage.takeControlVisible.index;
+            final showHeadlineSubtitle = currentStage.index >=
+                IntroHeaderStage.rightTextVisible.index;
+            final isHeaderPinnedToTop =
+                currentStage == IntroHeaderStage.movedToTop;
+
+            return ValueListenableBuilder<double>(
+              valueListenable: _unpinnedSpacerHeight,
+              builder: (context, unpinnedSpacerHeight, _) {
+                return AnimatedBuilder(
+                  animation: _pinController,
+                  builder: (context, _) {
+                    final height = isHeaderPinnedToTop
+                        ? IntroConstants.headerTopInset +
+                            (unpinnedSpacerHeight -
+                                    IntroConstants.headerTopInset) *
+                                (1.0 - _pinController.value)
+                        : unpinnedHeight;
+                    return Column(
                       children: [
-                        AnimatedOpacity(
-                          opacity: isTakeControlVisible ? 1 : 0,
-                          duration: const Duration(milliseconds: 500),
-                          child: const Text(
-                            'Take Control',
-                            style: TextStyle(
-                              fontFamily: 'Sentient',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 32,
-                              height: 1.2,
-                              color: AppColors.white,
+                        SizedBox(height: height),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.spacing16,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  AnimatedOpacity(
+                                    opacity: showHeadlineTitle ? 1 : 0,
+                                    duration: const Duration(milliseconds: 400),
+                                    child: const Text(
+                                      'Take Control',
+                                      style: TextStyle(
+                                        fontFamily: 'Sentient',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 32,
+                                        height: 1.2,
+                                        color: AppColors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  AnimatedOpacity(
+                                    opacity: showHeadlineSubtitle ? 1 : 0,
+                                    duration: const Duration(milliseconds: 400),
+                                    child: const Text(
+                                      ' of Your',
+                                      style: TextStyle(
+                                        fontFamily: 'Sentient',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 32,
+                                        height: 1.2,
+                                        color: AppColors.secondary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              AnimatedOpacity(
+                                opacity: showHeadlineSubtitle ? 1 : 0,
+                                duration: const Duration(milliseconds: 400),
+                                child: const Text(
+                                  'Wealth with Hoxton Wealth App',
+                                  style: TextStyle(
+                                    fontFamily: 'Sentient',
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 32,
+                                    height: 1.2,
+                                    color: AppColors.secondary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                            height: IntroConstants.headerToFeaturesSpacing),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.spacing16,
+                            ),
+                            child: ValueListenableBuilder<int>(
+                              valueListenable: widget.controller.visibleItemCount,
+                              builder: (context, revealedFeatureCount, _) {
+                                return SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: List.generate(
+                                      IntroConstants.servicesList.length,
+                                      (index) {
+                                        final isFeatureRevealed =
+                                            index < revealedFeatureCount;
+                                        return AnimatedOpacity(
+                                          duration: const Duration(milliseconds: 200),
+                                          opacity: isFeatureRevealed ? 1 : 0,
+                                          child: AnimatedSlide(
+                                            duration: const Duration(milliseconds: 200),
+                                            offset: isFeatureRevealed
+                                                ? Offset.zero
+                                                : const Offset(0, 0.4),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical:
+                                                    IntroConstants.featureRowVerticalPadding,
+                                              ),
+                                              child: _IntroFeatureRow(
+                                                label:
+                                                    IntroConstants.servicesList[index].label,
+                                                iconPath: IntroConstants
+                                                    .servicesList[index]
+                                                    .iconPath,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
-                        AnimatedOpacity(
-                          opacity: isRightTextVisible ? 1 : 0,
-                          duration: const Duration(milliseconds: 300),
-                          child: const Text(
-                            ' of Your',
-                            style: TextStyle(
-                              fontFamily: 'Sentient',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 32,
-                              height: 1.2,
-                              color: AppColors.secondary,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.spacing16,
+                          ),
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: widget.controller.showContinue,
+                            builder: (context, isContinueRevealed, _) => AnimatedOpacity(
+                              opacity: isContinueRevealed ? 1 : 0,
+                              duration: const Duration(milliseconds: 300),
+                              child: AnimatedSlide(
+                                duration: const Duration(milliseconds: 300),
+                                offset: isContinueRevealed
+                                    ? Offset.zero
+                                    : const Offset(0, 0.4),
+                                child: _IntroBottomSection(),
+                              ),
                             ),
                           ),
                         ),
                       ],
-                    ),
-                    AnimatedOpacity(
-                      opacity: isRightTextVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 300),
-                      child: const Text(
-                        'Wealth with Hoxton Wealth App',
-                        style: TextStyle(
-                          fontFamily: 'Sentient',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 32,
-                          height: 1.2,
-                          color: AppColors.secondary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                left: AppSpacing.spacing16,
-                right: AppSpacing.spacing16,
-                top: () {
-                  final headerTop = isMovedToTop
-                      ? 78.0
-                      : isTakeControlVisible
-                          ? size.height / 2 - 60
-                          : size.height / 2;
-                  final belowHeader =
-                      headerTop + _headlineBlockHeight() + 24;
-                  return math.max(size.height * 0.30, belowHeader);
-                }(),
-                child: ValueListenableBuilder<int>(
-                  valueListenable: controller.visibleItemCount,
-                  builder: (context, visibleItemCount, _) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                        IntroConstants.servicesList.length,
-                        (i) {
-                          final showItem = i < visibleItemCount;
-                          return AnimatedOpacity(
-                            duration: const Duration(milliseconds: 200),
-                            opacity: showItem ? 1 : 0,
-                            child: AnimatedSlide(
-                              duration: const Duration(milliseconds: 200),
-                              offset: showItem
-                                  ? Offset.zero
-                                  : const Offset(0, 0.3),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 22,
-                                ),
-                                child: _IntroFeatureRow(
-                                  label: IntroConstants.servicesList[i].label,
-                                  iconPath:
-                                      IntroConstants.servicesList[i].iconPath,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
                     );
                   },
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: AppSpacing.spacing16,
-                right: AppSpacing.spacing16,
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: controller.showContinue,
-                  builder: (context, showContinue, _) => AnimatedOpacity(
-                    opacity: showContinue ? 1 : 0,
-                    duration: const Duration(milliseconds: 300),
-                    child: AnimatedSlide(
-                      duration: const Duration(milliseconds: 300),
-                      offset:
-                          showContinue ? Offset.zero : const Offset(0, 0.3),
-                      child: _IntroBottomSection(),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+                );
+              },
+            );
+          },
         );
       },
     );

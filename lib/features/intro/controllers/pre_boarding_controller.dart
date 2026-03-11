@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 
 import 'package:hoxton_task/features/intro/pre_boarding_constants.dart';
 
-/// Runs the pre-boarding sequence and exposes step state. UI only observes and triggers.
 class PreBoardingController {
   PreBoardingController({
     required VoidCallback onComplete,
@@ -19,7 +18,6 @@ class PreBoardingController {
   bool _disposed = false;
   bool _started = false;
 
-  /// Starts the sequence once. Safe to call from initState.
   Future<void> start() async {
     if (_started) return;
     _started = true;
@@ -31,7 +29,6 @@ class PreBoardingController {
 
     await Future.delayed(PreBoardingConstants.afterProfileDoneDelay);
     if (_disposed) return;
-    // Headline fade is reflected by step; no extra state.
 
     await Future.delayed(PreBoardingConstants.headlineFadeDelay);
     if (_disposed) return;

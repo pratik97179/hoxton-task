@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Semantic color tokens only. No theme; no dark/light variants.
 abstract final class AppColors {
   AppColors._();
 
@@ -12,4 +11,6 @@ abstract final class AppColors {
   static const Color coolGrey = Color(0xFF22272A);
   static const Color slateShade2 = Color(0xFF3C595B);
   static const Color greyGreenTint2 = Color(0xFFEBF2F1);
+  static const Color captionGrey = Color(0xFF888D95);
+  static const Color successDark = Color(0xFF067F42);
 }

@@ -9,12 +9,11 @@ abstract final class PreBoardingConstants {
   // Sequence durations
   static const Duration profileLoadingDuration = Duration(seconds: 2);
   static const Duration afterProfileDoneDelay = Duration(seconds: 1);
-  static const Duration headlineFadeDelay = Duration(milliseconds: 300);
-  static const Duration dashboardLoadingDuration = Duration(seconds: 2);
+  static const Duration headlineFadeDelay = Duration(milliseconds: 250);
+  static const Duration dashboardLoadingDuration = Duration(seconds: 1);
   static const Duration afterDashboardDoneDelay = Duration(seconds: 1);
   static const Duration beforeNavigateDelay = Duration(milliseconds: 400);
 
-  // Copy
   static const String headlineBuilding = 'We are building your ';
   static const String headlineTypingWord = 'dashboard';
   static const String headlineReady = 'Your personalized dashboard is ready!';

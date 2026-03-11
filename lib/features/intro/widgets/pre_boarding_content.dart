@@ -37,13 +37,17 @@ class PreBoardingContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _Headline(step: step),
-          const SizedBox(height: AppSpacing.spacing12),
-          PhraseCarousel(
-            controller: phraseController,
-            style: _phraseStyle,
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.spacing8),
+            child: PhraseCarousel(
+              controller: phraseController,
+              style: _phraseStyle,
+            ),
           ),
-          const SizedBox(height: AppSpacing.spacing32),
-          _StepsSection(step: step),
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.spacing32),
+            child: _StepsSection(step: step),
+          ),
         ],
       ),
     );

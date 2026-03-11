@@ -7,10 +7,10 @@ import 'package:hoxton_task/features/auth/presentation/pages/email_page.dart';
 import 'package:hoxton_task/features/intro/pages/intro_page.dart';
 import 'package:hoxton_task/features/intro/pages/pre_boarding_page.dart';
 
-GoRouter createAppRouter() {
+GoRouter createAppRouter({required bool hasAccessToken}) {
   return GoRouter(
-    // TODO: revert to intro when done
-    initialLocation: AppRouteNames.preBoarding,
+    initialLocation:
+        hasAccessToken ? AppRouteNames.email : AppRouteNames.intro,
     routes: [
       GoRoute(
         path: AppRouteNames.intro,

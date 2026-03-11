@@ -9,8 +9,17 @@ abstract final class IntroConstants {
   static const Duration pauseAfterSlide = Duration(milliseconds: 400);
   static const Duration pauseAfterReveal = Duration(milliseconds: 400);
 
-  /// Splash fades out before showing intro content.
   static const Duration splashFadeOutDuration = Duration(milliseconds: 200);
+
+  static const Duration introInitialDelay = Duration(milliseconds: 600);
+  static const Duration introAfterTitleDelay = Duration(milliseconds: 500);
+  static const Duration introAfterSubtitleDelay = Duration(milliseconds: 300);
+  static const Duration introFeatureRevealDelay = Duration(milliseconds: 450);
+  static const Duration introBeforeContinueDelay = Duration(milliseconds: 250);
+
+  static const double headerTopInset = 78;
+  static const double headerToFeaturesSpacing = 24;
+  static const double featureRowVerticalPadding = 22;
 
   // Assets
   static const String splashImagePath = 'assets/images/png/hoxton_main.png';
