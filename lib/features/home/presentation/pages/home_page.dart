@@ -46,7 +46,12 @@ class _HomePageState extends State<HomePage> {
                   colors: [
                     AppColors.gradientTop,
                     AppColors.greyGreenTint2,
-                    AppColors.white.withValues(alpha: 0.3),
+                    const Color.fromARGB(
+                      255,
+                      192,
+                      192,
+                      192,
+                    ).withValues(alpha: 0.01),
                   ],
                   stops: [0.0, 0.5, 1.0],
                 ),
