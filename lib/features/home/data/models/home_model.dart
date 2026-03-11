@@ -1,6 +1,5 @@
 import 'package:hoxton_task/features/home/home_constants.dart';
 
-/// Parsed home/dashboard payload from the backend.
 class HomeModel {
   const HomeModel({
     this.netWorth,

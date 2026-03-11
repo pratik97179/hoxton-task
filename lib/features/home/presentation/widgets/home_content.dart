@@ -11,7 +11,6 @@ import 'package:hoxton_task/features/home/presentation/widgets/home_net_worth_se
 import 'package:hoxton_task/features/home/presentation/widgets/home_news_card.dart';
 import 'package:hoxton_task/features/home/presentation/widgets/home_services_vault_cards.dart';
 
-/// Composes all home sections. Uses [home] from API when present.
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key, this.home});
 

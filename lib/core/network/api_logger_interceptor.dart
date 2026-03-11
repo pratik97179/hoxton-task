@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 
 import 'package:hoxton_task/core/logger/app_logger.dart';
 
-/// Logs every API request and response to the console with readable payloads.
 class ApiLoggerInterceptor extends Interceptor {
   ApiLoggerInterceptor([AppLogger? logger]) : _logger = logger ?? appLogger;
 

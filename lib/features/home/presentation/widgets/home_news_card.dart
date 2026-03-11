@@ -5,7 +5,6 @@ import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/data/models/home_model.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
 
-/// News/article card with thumbnail, title, description, and pagination dots.
 class HomeNewsCard extends StatefulWidget {
   const HomeNewsCard({super.key, this.home});
 

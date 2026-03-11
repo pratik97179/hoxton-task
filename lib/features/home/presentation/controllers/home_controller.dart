@@ -6,7 +6,6 @@ import 'package:hoxton_task/core/session/session_manager.dart';
 import 'package:hoxton_task/features/home/data/datasources/home_remote_data_source.dart';
 import 'package:hoxton_task/features/home/data/models/home_model.dart';
 
-/// Loading state for home data.
 sealed class HomeState {
   const HomeState();
 }
@@ -29,7 +28,6 @@ class HomeStateError extends HomeState {
   final String message;
 }
 
-/// Coordinates loading of home data when the user lands on the home screen.
 class HomeController extends ChangeNotifier {
   HomeController(this._remoteDataSource, this._sessionManager);
 

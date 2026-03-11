@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// A unified image widget that can only be created via [AppImage.asset]
-/// or [AppImage.svg]. Direct instantiation is not allowed.
 class AppImage extends StatelessWidget {
   const AppImage._({
     super.key,
@@ -27,7 +25,6 @@ class AppImage extends StatelessWidget {
   final ColorFilter? colorFilter;
   final String? semanticsLabel;
 
-  /// Creates an [AppImage] from an asset (e.g. PNG, JPG) using [Image.asset].
   factory AppImage.asset(
     String path, {
     Key? key,
@@ -51,7 +48,6 @@ class AppImage extends StatelessWidget {
     );
   }
 
-  /// Creates an [AppImage] from an SVG asset using [SvgPicture.asset].
   factory AppImage.svg(
     String path, {
     Key? key,

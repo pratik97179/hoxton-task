@@ -1,4 +1,3 @@
-/// Single source of truth for spacing. Use these instead of magic numbers.
 abstract final class AppSpacing {
   AppSpacing._();
 

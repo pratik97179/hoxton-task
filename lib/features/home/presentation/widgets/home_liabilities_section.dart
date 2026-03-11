@@ -5,7 +5,6 @@ import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/data/models/home_model.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
 
-/// Liabilities card: list from API or empty state with trailing arrow.
 class HomeLiabilitiesSection extends StatelessWidget {
   const HomeLiabilitiesSection({super.key, this.home});
 

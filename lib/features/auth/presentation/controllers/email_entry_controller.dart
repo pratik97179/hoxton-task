@@ -5,7 +5,6 @@ import 'package:hoxton_task/core/extensions/string_validation_extension.dart';
 import 'package:hoxton_task/core/network/api_exception.dart';
 import 'package:hoxton_task/features/auth/domain/repositories/auth_repository.dart';
 
-/// Result of checking whether an email exists. UI uses this to navigate or show error.
 sealed class EmailCheckResult {
   const EmailCheckResult();
 }
@@ -22,8 +21,6 @@ class EmailCheckFailure extends EmailCheckResult {
   final String message;
 }
 
-/// Holds email validation and check state; runs check via [AuthRepository].
-/// No BuildContext or navigation; page uses [EmailCheckResult] to push or show SnackBar.
 class EmailEntryController {
   EmailEntryController() : _authRepo = sl<AuthRepository>();
 
@@ -36,7 +33,6 @@ class EmailEntryController {
     isEmailValid.value = email.isValidEmail;
   }
 
-  /// Returns [EmailCheckSuccess] with [userExists] or [EmailCheckFailure] with message.
   Future<EmailCheckResult> checkEmail(String email) async {
     final trimmed = email.trim();
     if (trimmed.isEmpty || !trimmed.isValidEmail) {

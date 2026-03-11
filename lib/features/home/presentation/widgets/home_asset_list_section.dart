@@ -5,7 +5,6 @@ import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
 import 'package:hoxton_task/features/home/presentation/widgets/home_asset_row.dart';
 
-/// Assets section with header ("Assets" + add icon) and list of asset rows.
 class HomeAssetListSection extends StatelessWidget {
   const HomeAssetListSection({super.key});
 

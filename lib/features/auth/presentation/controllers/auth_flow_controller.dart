@@ -35,7 +35,6 @@ class AuthFlowController {
 
   final ValueNotifier<bool> isSubmitting = ValueNotifier(false);
 
-  /// [isSignIn] true = login, false = register. Returns [AuthFlowSuccess] or [AuthFlowFailure].
   Future<AuthFlowResult> submit({
     required String email,
     required String password,

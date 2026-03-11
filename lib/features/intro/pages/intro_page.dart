@@ -68,7 +68,6 @@ class _IntroPageState extends State<IntroPage>
   }
 }
 
-/// Starts the intro content animation once, then builds [IntroContent].
 class _IntroContentWithAnimation extends StatefulWidget {
   const _IntroContentWithAnimation({required this.controller});
 

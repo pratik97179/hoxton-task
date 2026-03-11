@@ -1,8 +1,7 @@
-/// Intro screen: durations, asset paths, and feature list.
+
 abstract final class IntroConstants {
   IntroConstants._();
 
-  // Durations
   static const Duration initialWait = Duration(seconds: 1);
   static const Duration slideDuration = Duration(milliseconds: 300);
   static const Duration textRevealDuration = Duration(milliseconds: 600);
@@ -21,7 +20,6 @@ abstract final class IntroConstants {
   static const double headerToFeaturesSpacing = 24;
   static const double featureRowVerticalPadding = 22;
 
-  // Assets
   static const String splashImagePath = 'assets/images/png/hoxton_main.png';
   static const String onboardingIcon1 =
       'assets/images/svg/onboarding_intro_icon1.svg';

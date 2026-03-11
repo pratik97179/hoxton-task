@@ -4,7 +4,6 @@ import 'package:hoxton_task/core/di/injection.dart';
 import 'package:hoxton_task/features/home/presentation/controllers/home_controller.dart';
 import 'package:hoxton_task/features/home/presentation/widgets/home_content.dart';
 
-/// Home dashboard page. Triggers a home API fetch when first shown.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 

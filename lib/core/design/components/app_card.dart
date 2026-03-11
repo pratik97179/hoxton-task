@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 
-/// Reusable surface card with design-system styling.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,

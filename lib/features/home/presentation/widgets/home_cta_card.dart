@@ -4,7 +4,6 @@ import 'package:hoxton_task/core/design/components/app_card.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 
-/// Full-width CTA card: icon, title, description, and primary button.
 class HomeCtaCard extends StatelessWidget {
   const HomeCtaCard({
     super.key,

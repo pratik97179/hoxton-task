@@ -15,7 +15,6 @@ import 'package:hoxton_task/features/home/presentation/controllers/home_controll
 final GetIt sl = GetIt.instance;
 
 Future<void> initServiceLocator() async {
-  // Core
   sl.registerLazySingleton<Dio>(() {
     final dio = Dio(
       BaseOptions(
@@ -33,7 +32,6 @@ Future<void> initServiceLocator() async {
 
   sl.registerLazySingleton<SessionManager>(() => SessionManager());
 
-  // Auth
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(sl<ApiClient>()),
   );
@@ -50,7 +48,6 @@ Future<void> initServiceLocator() async {
     () => LoginWithEmailPassword(sl<AuthRepository>()),
   );
 
-  // Home
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(sl<ApiClient>()),
   );

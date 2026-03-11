@@ -39,5 +39,4 @@ class AppLogger {
   }
 }
 
-/// Default app-wide logger instance.
 final appLogger = AppLogger('API');

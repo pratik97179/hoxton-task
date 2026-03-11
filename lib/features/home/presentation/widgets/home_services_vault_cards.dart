@@ -4,7 +4,6 @@ import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
 
-/// Two side-by-side cards: Services and Vault.
 class HomeServicesVaultCards extends StatelessWidget {
   const HomeServicesVaultCards({super.key});
 

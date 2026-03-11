@@ -3,7 +3,6 @@ import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
 import 'package:hoxton_task/features/home/home_constants.dart';
 
-/// Single asset/liability row: icon, title, value, and trailing (Add button or arrow).
 class HomeAssetRow extends StatelessWidget {
   const HomeAssetRow({
     super.key,
