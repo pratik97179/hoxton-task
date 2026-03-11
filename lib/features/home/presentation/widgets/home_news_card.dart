@@ -21,9 +21,7 @@ class _HomeNewsCardState extends State<HomeNewsCard> {
   Widget build(BuildContext context) {
     final news = widget.home?.news ?? [];
     final hasNews = news.isNotEmpty;
-    final index = hasNews
-        ? _selectedIndex.clamp(0, news.length - 1)
-        : 0;
+    final index = hasNews ? _selectedIndex.clamp(0, news.length - 1) : 0;
     final item = hasNews ? news[index] : null;
     final title = item?.title ?? HomeConstants.newsArticleTitle;
     final description =
@@ -33,7 +31,6 @@ class _HomeNewsCardState extends State<HomeNewsCard> {
     return AppCard(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,14 +138,16 @@ class _PaginationDots extends StatelessWidget {
         return GestureDetector(
           onTap: onTap != null ? () => onTap!(i) : null,
           child: Padding(
-            padding:
-                EdgeInsets.only(right: i < count - 1 ? AppSpacing.spacing8 : 0),
+            padding: EdgeInsets.only(
+              right: i < count - 1 ? AppSpacing.spacing8 : 0,
+            ),
             child: Container(
               width: isSelected ? 24 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color:
-                    isSelected ? AppColors.primaryBg : AppColors.greyGreenTint2,
+                color: isSelected
+                    ? AppColors.primaryBg
+                    : AppColors.greyGreenTint2,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),

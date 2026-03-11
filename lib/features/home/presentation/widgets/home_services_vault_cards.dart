@@ -41,8 +41,10 @@ class _SmallCard extends StatelessWidget {
     this.iconSvgPath,
     required this.title,
     required this.description,
-  }) : assert(icon != null || iconSvgPath != null,
-            'Either icon or iconSvgPath must be provided');
+  }) : assert(
+         icon != null || iconSvgPath != null,
+         'Either icon or iconSvgPath must be provided',
+       );
 
   final IconData? icon;
   final String? iconSvgPath;
@@ -75,18 +77,13 @@ class _SmallCard extends StatelessWidget {
               color: AppColors.coolGrey,
               fontSize: 18,
               fontWeight: FontWeight.w500,
-              height: 26 / 18,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             description,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.captionGrey,
-              fontSize: 14,
-              height: 20 / 14,
-            ),
+            style: const TextStyle(color: AppColors.captionGrey, fontSize: 14),
           ),
         ],
       ),
