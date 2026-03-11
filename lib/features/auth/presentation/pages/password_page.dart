@@ -347,7 +347,7 @@ class _PasswordPageState extends State<PasswordPage> {
         builder: (context, submitting, _) {
           return ValueListenableBuilder<TextEditingValue>(
             valueListenable: _passwordController,
-            builder: (context, value, __) {
+            builder: (context, value, _) {
               final enabled =
                   !submitting && _isButtonEnabled && _canSubmit;
               return AppButton(

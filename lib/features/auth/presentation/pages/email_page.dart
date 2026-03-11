@@ -194,7 +194,7 @@ class _EmailPageState extends State<EmailPage> {
         builder: (context, isChecking, _) {
           return ValueListenableBuilder<bool>(
             valueListenable: _entryController.isEmailValid,
-            builder: (context, isValid, __) {
+            builder: (context, isValid, _) {
               final isEnabled = isValid && !isChecking;
               return AppButton(
                 label: isChecking ? 'Checking...' : 'Continue',

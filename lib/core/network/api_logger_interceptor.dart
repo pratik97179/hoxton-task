@@ -12,7 +12,7 @@ class ApiLoggerInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     _logger.d(
       '→ ${options.method} ${options.uri}',
-      data: options.data != null ? options.data : options.queryParameters,
+      data: options.data ?? options.queryParameters,
     );
     handler.next(options);
   }
