@@ -210,7 +210,7 @@ class _IntroContentState extends State<IntroContent> {
 
               // Bottom section: Get started + home indicator
               Positioned(
-                bottom: 20,
+                bottom: 0,
                 left: AppSpacing.spacing16,
                 right: AppSpacing.spacing16,
                 child: ValueListenableBuilder<bool>(
@@ -280,39 +280,31 @@ class _IntroFeatureRow extends StatelessWidget {
 class _IntroBottomSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(AppSpacing.spacing16),
-          child: SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => context.go(AppRouteNames.email),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.white,
-                side: const BorderSide(color: AppColors.white, width: 2),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spacing16,
-                  vertical: AppSpacing.spacing8,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-                ),
-                backgroundColor: AppColors.primaryBg,
-              ),
-              child: const Text(
-                'Get started',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  height: 1.5,
-                ),
-              ),
-            ),
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: () => context.go(AppRouteNames.email),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.white,
+          side: const BorderSide(color: AppColors.white, width: 2),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.spacing16,
+            vertical: AppSpacing.spacing8,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.spacing8),
+          ),
+          backgroundColor: AppColors.primaryBg,
+        ),
+        child: const Text(
+          'Get started',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            height: 1.5,
           ),
         ),
-      ],
+      ),
     );
   }
 }

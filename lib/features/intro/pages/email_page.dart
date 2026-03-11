@@ -2,8 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:hoxton_task/core/design/components/app_button.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
+import 'package:hoxton_task/core/extensions/string_validation_extension.dart';
 import 'package:hoxton_task/core/router/app_route_names.dart';
 
 class EmailPage extends StatefulWidget {
@@ -16,11 +18,13 @@ class EmailPage extends StatefulWidget {
 class _EmailPageState extends State<EmailPage> {
   final _emailController = TextEditingController();
   final _emailFocusNode = FocusNode();
+  final ValueNotifier<bool> _isEmailValid = ValueNotifier(false);
 
   @override
   void dispose() {
     _emailController.dispose();
     _emailFocusNode.dispose();
+    _isEmailValid.dispose();
     super.dispose();
   }
 
@@ -107,6 +111,9 @@ class _EmailPageState extends State<EmailPage> {
           focusNode: _emailFocusNode,
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
+          onChanged: (value) {
+            _isEmailValid.value = value.isValidEmail;
+          },
           decoration: InputDecoration(
             hintText: '',
             filled: true,
@@ -178,32 +185,17 @@ class _EmailPageState extends State<EmailPage> {
   Widget _buildContinueButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-          onPressed: () {
-            context.push('${AppRouteNames.password}?mode=set', extra: () {});
-          },
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryBg,
-            foregroundColor: AppColors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing16,
-              vertical: 10,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-            ),
-          ),
-          child: const Text(
-            'Continue',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              height: 24 / 16,
-            ),
-          ),
-        ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _isEmailValid,
+        builder: (context, isValid, _) {
+          return AppButton(
+            label: 'Continue',
+            isEnabled: isValid,
+            onPressed: () {
+              context.push('${AppRouteNames.password}?mode=set', extra: () {});
+            },
+          );
+        },
       ),
     );
   }

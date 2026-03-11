@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoxton_task/core/design/components/app_button.dart';
 import 'package:hoxton_task/core/design/components/app_image.dart';
 import 'package:hoxton_task/core/design/palette/app_colors.dart';
 import 'package:hoxton_task/core/design/palette/app_spacing.dart';
@@ -33,9 +34,18 @@ class PasswordPage extends StatefulWidget {
 class _PasswordPageState extends State<PasswordPage> {
   final _passwordController = TextEditingController();
   final _passwordFocusNode = FocusNode();
-  bool _obscurePassword = true;
-  PasswordValidationStatus _passwordStatus =
-      const PasswordValidationStatus.empty();
+  final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
+
+  bool get _isButtonEnabled {
+    final value = _passwordController.text;
+    switch (widget.mode) {
+      case PasswordPageMode.set:
+        return value.passwordValidationStatus.isValid;
+      case PasswordPageMode.confirm:
+      case PasswordPageMode.verify:
+        return value.isNotEmpty;
+    }
+  }
 
   String get _title {
     switch (widget.mode) {
@@ -76,6 +86,7 @@ class _PasswordPageState extends State<PasswordPage> {
   void dispose() {
     _passwordController.dispose();
     _passwordFocusNode.dispose();
+    _obscurePassword.dispose();
     super.dispose();
   }
 
@@ -100,13 +111,24 @@ class _PasswordPageState extends State<PasswordPage> {
                   children: [
                     _buildHeader(),
                     const SizedBox(height: AppSpacing.spacing24),
-                    _buildPasswordField(),
-                    if (_showRequirements) ...[
-                      const SizedBox(height: AppSpacing.spacing16),
-                      _buildPasswordRequirements(),
-                      const SizedBox(height: AppSpacing.spacing16),
-                      _buildSecurityMessage(),
-                    ],
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _passwordController,
+                      builder: (context, value, _) {
+                        final status = value.text.passwordValidationStatus;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildPasswordField(),
+                            if (_showRequirements) ...[
+                              const SizedBox(height: AppSpacing.spacing16),
+                              _buildPasswordRequirements(status),
+                              const SizedBox(height: AppSpacing.spacing16),
+                              _buildSecurityMessage(),
+                            ],
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -158,60 +180,61 @@ class _PasswordPageState extends State<PasswordPage> {
           ),
         ),
         const SizedBox(height: AppSpacing.spacing4),
-        TextField(
-          controller: _passwordController,
-          focusNode: _passwordFocusNode,
-          obscureText: _obscurePassword,
-          obscuringCharacter: '•',
-          onChanged: (value) {
-            setState(() {
-              _passwordStatus = value.passwordValidationStatus;
-            });
-          },
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: AppColors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing16,
-              vertical: AppSpacing.spacing8,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-              borderSide: const BorderSide(color: AppColors.coolGrey),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-              borderSide: const BorderSide(color: AppColors.coolGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-              borderSide: const BorderSide(color: AppColors.coolGrey),
-            ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscurePassword
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                color: AppColors.coolGrey,
-                size: 20,
+        ValueListenableBuilder<bool>(
+          valueListenable: _obscurePassword,
+          builder: (context, obscure, _) {
+            return TextField(
+              controller: _passwordController,
+              focusNode: _passwordFocusNode,
+              obscureText: obscure,
+              obscuringCharacter: '•',
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacing16,
+                  vertical: AppSpacing.spacing8,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.spacing8),
+                  borderSide: const BorderSide(color: AppColors.coolGrey),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.spacing8),
+                  borderSide: const BorderSide(color: AppColors.coolGrey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.spacing8),
+                  borderSide: const BorderSide(color: AppColors.coolGrey),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscure
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: AppColors.coolGrey,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    _obscurePassword.value = !obscure;
+                  },
+                ),
               ),
-              onPressed: () =>
-                  setState(() => _obscurePassword = !_obscurePassword),
-            ),
-          ),
-          style: const TextStyle(
-            fontSize: 16,
-            height: 24 / 16,
-            color: AppColors.coolGrey,
-          ),
+              style: const TextStyle(
+                fontSize: 16,
+                height: 24 / 16,
+                color: AppColors.coolGrey,
+              ),
+            );
+          },
         ),
       ],
     );
   }
 
-  Widget _buildPasswordRequirements() {
+  Widget _buildPasswordRequirements(PasswordValidationStatus status) {
     final List<PasswordRequirement> requirements =
-        PasswordRequirementsPresenter.build(_passwordStatus);
+        PasswordRequirementsPresenter.build(status);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -287,30 +310,15 @@ class _PasswordPageState extends State<PasswordPage> {
   Widget _buildButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-          onPressed: () => widget.onSubmit?.call(),
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryBg,
-            foregroundColor: AppColors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing16,
-              vertical: 10,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.spacing8),
-            ),
-          ),
-          child: Text(
-            _buttonText,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              height: 24 / 16,
-            ),
-          ),
-        ),
+      child: ValueListenableBuilder<TextEditingValue>(
+        valueListenable: _passwordController,
+        builder: (context, value, _) {
+          return AppButton(
+            label: _buttonText,
+            isEnabled: _isButtonEnabled,
+            onPressed: widget.onSubmit,
+          );
+        },
       ),
     );
   }
