@@ -8,6 +8,7 @@ import 'package:hoxton_task/core/network/api_logger_interceptor.dart';
 import 'package:hoxton_task/core/session/session_manager.dart';
 import 'package:hoxton_task/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:hoxton_task/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:hoxton_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:hoxton_task/features/auth/domain/repositories/auth_repository.dart';
 import 'package:hoxton_task/features/auth/domain/usecases/login_with_email_password.dart';
 import 'package:hoxton_task/features/auth/domain/usecases/register_with_email_password.dart';
@@ -48,6 +49,14 @@ Future<void> initServiceLocator() async {
 
   sl.registerLazySingleton<LoginWithEmailPassword>(
     () => LoginWithEmailPassword(sl<AuthRepository>()),
+  );
+
+  sl.registerFactory<AuthBloc>(
+    () => AuthBloc(
+      sl<LoginWithEmailPassword>(),
+      sl<RegisterWithEmailPassword>(),
+      sl<SessionManager>(),
+    ),
   );
 
   sl.registerLazySingleton<HomeRemoteDataSource>(

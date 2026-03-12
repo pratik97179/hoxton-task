@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoxton_task/features/auth/domain/usecases/login_with_email_password.dart';
+import 'package:hoxton_task/features/auth/domain/usecases/register_with_email_password.dart';
+import 'package:hoxton_task/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/di/injection.dart';
@@ -14,8 +18,7 @@ void main() async {
   await sessionManager.restoreFromStorage();
 
   final prefs = await SharedPreferences.getInstance();
-  var hasAccessToken =
-      (prefs.getString('accessToken')?.isNotEmpty ?? false);
+  var hasAccessToken = (prefs.getString('accessToken')?.isNotEmpty ?? false);
 
   if (hasAccessToken && sessionManager.session == null) {
     await sessionManager.clear();
@@ -34,13 +37,24 @@ class HoxtonApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Hoxton Task',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: ThemeData().textTheme.apply(fontFamily: 'Sentient'),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthBloc(
+            sl<LoginWithEmailPassword>(),
+            sl<RegisterWithEmailPassword>(),
+            sl<SessionManager>(),
+          ),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'Hoxton Task',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          textTheme: ThemeData().textTheme.apply(fontFamily: 'Sentient'),
+        ),
+        routerConfig: router,
       ),
-      routerConfig: router,
     );
   }
 }

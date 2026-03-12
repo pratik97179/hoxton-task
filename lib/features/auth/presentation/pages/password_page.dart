@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:hoxton_task/core/design/components/app_button.dart';
 import 'package:hoxton_task/core/design/components/app_image.dart';
@@ -9,7 +10,8 @@ import 'package:hoxton_task/core/extensions/string_validation_extension.dart';
 import 'package:hoxton_task/core/router/app_route_names.dart';
 import 'package:hoxton_task/core/utils/password_requirements.dart';
 import 'package:hoxton_task/core/utils/password_validation.dart';
-import 'package:hoxton_task/features/auth/presentation/controllers/auth_flow_controller.dart';
+import 'package:hoxton_task/core/di/injection.dart';
+import 'package:hoxton_task/features/auth/presentation/bloc/auth_bloc.dart';
 
 enum PasswordPageMode { set, verify }
 
@@ -35,7 +37,7 @@ class _PasswordPageState extends State<PasswordPage> {
   final _passwordController = TextEditingController();
   final _passwordFocusNode = FocusNode();
   final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
-  late final AuthFlowController _authController;
+  late final AuthBloc _authBloc;
 
   bool get _isButtonEnabled {
     final value = _passwordController.text;
@@ -79,7 +81,7 @@ class _PasswordPageState extends State<PasswordPage> {
   @override
   void initState() {
     super.initState();
-    _authController = AuthFlowController();
+    _authBloc = sl<AuthBloc>();
   }
 
   @override
@@ -87,55 +89,73 @@ class _PasswordPageState extends State<PasswordPage> {
     _passwordController.dispose();
     _passwordFocusNode.dispose();
     _obscurePassword.dispose();
-    _authController.dispose();
+    _authBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.greyGreenTint2,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.spacing16,
-                  AppSpacing.spacing48,
-                  AppSpacing.spacing16,
-                  AppSpacing.spacing16,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildHeader(),
-                    const SizedBox(height: AppSpacing.spacing24),
-                    ValueListenableBuilder<TextEditingValue>(
-                      valueListenable: _passwordController,
-                      builder: (context, value, _) {
-                        final status = value.text.passwordValidationStatus;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _buildPasswordField(),
-                            if (_showRequirements) ...[
-                              const SizedBox(height: AppSpacing.spacing16),
-                              _buildPasswordRequirements(status),
-                              const SizedBox(height: AppSpacing.spacing16),
-                              _buildSecurityMessage(),
-                            ],
-                          ],
-                        );
-                      },
+    return BlocProvider.value(
+      value: _authBloc,
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            if (state.isSignIn) {
+              context.go(AppRouteNames.home);
+            } else if (state.email != null) {
+              context.go(AppRouteNames.preBoarding, extra: state.email);
+            }
+          } else if (state is AuthFailure) {
+            ScaffoldMessenger.maybeOf(
+              context,
+            )?.showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.greyGreenTint2,
+          resizeToAvoidBottomInset: true,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.spacing16,
+                      AppSpacing.spacing48,
+                      AppSpacing.spacing16,
+                      AppSpacing.spacing16,
                     ),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildHeader(),
+                        const SizedBox(height: AppSpacing.spacing24),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: _passwordController,
+                          builder: (context, value, _) {
+                            final status = value.text.passwordValidationStatus;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _buildPasswordField(),
+                                if (_showRequirements) ...[
+                                  const SizedBox(height: AppSpacing.spacing16),
+                                  _buildPasswordRequirements(status),
+                                  const SizedBox(height: AppSpacing.spacing16),
+                                  _buildSecurityMessage(),
+                                ],
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                _buildButton(context),
+              ],
             ),
-            _buildButton(context),
-          ],
+          ),
         ),
       ),
     );
@@ -314,34 +334,21 @@ class _PasswordPageState extends State<PasswordPage> {
     final email = widget.email;
     final password = _passwordController.text;
     if (email == null) return;
-
-    final result = await _authController.submit(
-      email: email,
-      password: password,
-      isSignIn: widget.mode == PasswordPageMode.verify,
+    _authBloc.add(
+      AuthSubmitted(
+        email: email,
+        password: password,
+        isSignIn: widget.mode == PasswordPageMode.verify,
+      ),
     );
-    if (!mounted) return;
-
-    switch (result) {
-      case AuthFlowSuccess(:final isSignIn, email: final successEmail):
-        if (isSignIn) {
-          context.go(AppRouteNames.home);
-        } else if (successEmail != null) {
-          context.go(AppRouteNames.preBoarding, extra: successEmail);
-        }
-      case AuthFlowFailure(:final message):
-        ScaffoldMessenger.maybeOf(
-          context,
-        )?.showSnackBar(SnackBar(content: Text(message)));
-    }
   }
 
   Widget _buildButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.spacing16),
-      child: ValueListenableBuilder<bool>(
-        valueListenable: _authController.isSubmitting,
-        builder: (context, submitting, _) {
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final submitting = state is AuthLoading;
           return ValueListenableBuilder<TextEditingValue>(
             valueListenable: _passwordController,
             builder: (context, value, _) {
